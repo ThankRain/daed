@@ -126,6 +126,11 @@ type Mutation {
 	# updateSubscriptionCron is to update the subscription cron settings.
 	updateSubscriptionCron(id: ID!, cronExp: String!, cronEnable: Boolean!): Subscription! @hasRole(role: ADMIN)
 
+	# testNodeLatency tests the latency of a single node.
+	testNodeLatency(id: ID!, testUrl: String): LatencyTestResult! @hasRole(role: ADMIN)
+	# testNodesLatency tests the latency of multiple nodes.
+	testNodesLatency(ids: [ID!]!, testUrl: String): [LatencyTestResult!]! @hasRole(role: ADMIN)
+
 	# createGroup is to create a group.
 	createGroup(name: String!, policy: Policy!, policyParams: [PolicyParam!]): Group! @hasRole(role: ADMIN)
 

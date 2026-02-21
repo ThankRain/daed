@@ -19,7 +19,13 @@ type Node {
 type NodesConnection {
 	totalCount: Int!
 	edges: [Node!]!
-	pageInfo: PageInfo! 
+	pageInfo: PageInfo!
+}
+type LatencyTestResult {
+	id: ID!
+	latencyMs: Int!
+	errorMsg: String
+	testUrl: String!
 }
 `, nil
 }

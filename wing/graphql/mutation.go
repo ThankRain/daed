@@ -532,3 +532,25 @@ func (r *MutationResolver) GroupDelNodes(args *struct {
 }) (int32, error) {
 	return group.DelNodes(context.TODO(), args.ID, args.NodeIDs)
 }
+
+func (r *MutationResolver) TestNodeLatency(ctx context.Context, args *struct {
+	ID      graphql.ID
+	TestUrl *string
+}) (*node.LatencyTestResult, error) {
+	testUrl := ""
+	if args.TestUrl != nil {
+		testUrl = *args.TestUrl
+	}
+	return node.TestNodeLatency(ctx, args.ID, testUrl)
+}
+
+func (r *MutationResolver) TestNodesLatency(ctx context.Context, args *struct {
+	IDs     []graphql.ID
+	TestUrl *string
+}) ([]*node.LatencyTestResult, error) {
+	testUrl := ""
+	if args.TestUrl != nil {
+		testUrl = *args.TestUrl
+	}
+	return node.TestNodesLatency(ctx, args.IDs, testUrl)
+}
