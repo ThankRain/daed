@@ -10,12 +10,14 @@ import (
 	"fmt"
 	"net/http"
 	"net/netip"
+	"net/url"
 	"time"
 
 	"github.com/daeuniverse/dae-wing/common"
 	"github.com/daeuniverse/dae-wing/db"
 	"github.com/daeuniverse/dae/common/netutils"
 	"github.com/daeuniverse/dae/component/outbound/dialer"
+	outboundDialer "github.com/daeuniverse/outbound/dialer"
 	"github.com/daeuniverse/outbound/protocol/direct"
 	"github.com/graph-gophers/graphql-go"
 )
@@ -51,7 +53,7 @@ func testNodeLatencyWithLink(ctx context.Context, nodeID graphql.ID, link string
 	}
 
 	// Parse URL
-	u, err := netutils.ParseURL(testURL)
+	parsedURL, err := url.Parse(testURL)
 	if err != nil {
 		errMsg := fmt.Sprintf("invalid test URL: %v", err)
 		return &LatencyTestResult{
@@ -64,12 +66,8 @@ func testNodeLatencyWithLink(ctx context.Context, nodeID graphql.ID, link string
 
 	// Create a temporary dialer from link
 	gOption := &dialer.GlobalOption{
-		Log: nil, // Will use default logger
-		ExtraOption: dialer.ExtraOption{
-			DialTimeout:   10 * time.Second,
-			TfoEnable:   false,
-			MptcpEnable: false,
-		},
+		Log:         nil, // Will use default logger
+		ExtraOption: outboundDialer.ExtraOption{},
 	}
 	iOption := dialer.InstanceOption{
 		DisableCheck: true, // We will do manual check
@@ -101,9 +99,9 @@ func testNodeLatencyWithLink(ctx context.Context, nodeID graphql.ID, link string
 		}, nil
 	}
 
-	ip46, _, err := netutils.ResolveIp46(ctx, direct.SymmetricDirect, systemDns, u.Hostname(), "", false)
-	if err != nil || (!ip46.Ip4.IsValid() && !ip46.Ip6.IsValid()) {
-		errMsg := fmt.Sprintf("failed to resolve IP: %v", err)
+	ip46, err4, err6 := netutils.ResolveIp46(ctx, direct.SymmetricDirect, systemDns, parsedURL.Hostname(), "udp", false)
+	if !ip46.Ip4.IsValid() && !ip46.Ip6.IsValid() {
+		errMsg := fmt.Sprintf("failed to resolve IP: ipv4=%v, ipv6=%v", err4, err6)
 		return &LatencyTestResult{
 			NodeID:  nodeID,
 			Latency: -1,
@@ -122,6 +120,7 @@ func testNodeLatencyWithLink(ctx context.Context, nodeID graphql.ID, link string
 
 	// Perform HTTP check
 	start := time.Now()
+	u := &netutils.URL{URL: parsedURL}
 	ok, checkErr := d.HttpCheck(ctx, u, ip, http.MethodHead, 0, false)
 	latency := int32(time.Since(start).Milliseconds())
 

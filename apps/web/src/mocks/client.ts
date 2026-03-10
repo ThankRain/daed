@@ -54,6 +54,7 @@ const mockHandlers: Record<string, (variables?: Variables) => unknown> = {
       interfaces: mockGeneral.general.interfaces,
     },
   }),
+  HealthCheck: () => ({ healthCheck: 1 }),
 
   // Mutations - return success responses
   CreateConfig: () => ({ createConfig: { id: `config-${Date.now()}` } }),
@@ -89,6 +90,16 @@ const mockHandlers: Record<string, (variables?: Variables) => unknown> = {
   RemoveNodes: () => ({ removeNodes: true }),
   UpdateNode: () => ({
     updateNode: { id: 'node-1', name: 'Updated Node', tag: 'updated', link: 'vmess://xxx' },
+  }),
+  TestNodesLatency: (variables) => ({
+    testNodesLatency: (((variables?.ids as string[] | undefined) ?? []).map((id, index) => ({
+      id,
+      latencyMs: id === 'node-4' ? -1 : 45 + index * 18,
+      errorMsg: id === 'node-4' ? 'connection failed: timeout' : null,
+      testUrl: typeof variables?.testUrl === 'string' && variables.testUrl.length > 0
+        ? variables.testUrl
+        : 'http://cp.cloudflare.com',
+    }))),
   }),
 
   ImportSubscription: () => ({

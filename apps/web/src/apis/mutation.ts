@@ -951,6 +951,37 @@ export function useTagNodeMutation() {
   })
 }
 
+export function useTestNodesLatencyMutation() {
+  const gqlClient = useGQLQueryClient()
+
+  return useMutation({
+    mutationFn: ({ ids, testUrl }: { ids: string[]; testUrl?: string }) =>
+      gqlClient.request<{
+        testNodesLatency: Array<{
+          id: string
+          latencyMs: number
+          errorMsg?: string | null
+          testUrl: string
+        }>
+      }>(
+        `
+          mutation TestNodesLatency($ids: [ID!]!, $testUrl: String) {
+            testNodesLatency(ids: $ids, testUrl: $testUrl) {
+              id
+              latencyMs
+              errorMsg
+              testUrl
+            }
+          }
+        `,
+        {
+          ids,
+          testUrl,
+        },
+      ),
+  })
+}
+
 export function useTagSubscriptionMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()

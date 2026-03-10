@@ -6,6 +6,7 @@ import {
   QUERY_KEY_DNS,
   QUERY_KEY_GENERAL,
   QUERY_KEY_GROUP,
+  QUERY_KEY_HEALTH_CHECK,
   QUERY_KEY_NODE,
   QUERY_KEY_ROUTING,
   QUERY_KEY_STORAGE,
@@ -57,7 +58,7 @@ export function getDefaultsRequest(gqlClient: GQLClientInterface) {
 }
 
 export function getInterfacesRequest(gqlClient: GQLClientInterface) {
-  return () =>
+  return async () =>
     gqlClient.request(
       graphql(`
         query Interfaces($up: Boolean) {
@@ -145,6 +146,23 @@ export function useGeneralQuery() {
           up: true,
         },
       ),
+  })
+}
+
+export function useHealthCheckQuery() {
+  const gqlClient = useGQLQueryClient()
+
+  return useQuery({
+    queryKey: QUERY_KEY_HEALTH_CHECK,
+    queryFn: async () =>
+      gqlClient.request<{ healthCheck: number }>(`
+        query HealthCheck {
+          healthCheck
+        }
+      `),
+    refetchInterval: 5000,
+    refetchIntervalInBackground: true,
+    retry: false,
   })
 }
 

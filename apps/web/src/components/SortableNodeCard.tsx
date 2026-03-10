@@ -16,6 +16,7 @@ export function SortableNodeCard({
   index,
   name,
   leftSection,
+  status,
   onRemove,
   actions,
   children,
@@ -24,6 +25,7 @@ export function SortableNodeCard({
   index: number
   name: React.ReactNode
   leftSection?: React.ReactNode
+  status?: React.ReactNode
   onRemove: () => void
   actions?: React.ReactNode
   children: React.ReactNode
@@ -67,6 +69,9 @@ export function SortableNodeCard({
                 </div>
 
                 {/* Actions - always visible on mobile, hover on desktop */}
+                <div className="flex items-center gap-1 shrink-0">
+                  {status}
+                </div>
                 <div className="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0">
                   {actions}
                   <SimpleTooltip label={t('actions.remove')}>

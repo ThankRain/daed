@@ -19,6 +19,7 @@ import { Link } from 'react-router-dom'
 import { z } from 'zod'
 
 import {
+  useHealthCheckQuery,
   useGeneralQuery,
   useRunMutation,
   useUpdateAvatarMutation,
@@ -28,6 +29,7 @@ import {
   useUserQuery,
 } from '~/apis'
 import { Avatar } from '~/components/ui/avatar'
+import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { Code } from '~/components/ui/code'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/ui/dialog'
@@ -94,6 +96,7 @@ export function HeaderWithActions() {
   const [openedCommandPalette, { open: openCommandPalette, close: closeCommandPalette }] = useDisclosure(false)
   const { data: userQuery } = useUserQuery()
   const { data: generalQuery } = useGeneralQuery()
+  const healthCheckQuery = useHealthCheckQuery()
   const runMutation = useRunMutation()
   const updateNameMutation = useUpdateNameMutation()
   const updatePasswordMutation = useUpdatePasswordMutation()
@@ -115,6 +118,7 @@ export function HeaderWithActions() {
   }>({})
 
   const matchSmallScreen = useMediaQuery('(max-width: 640px)')
+  const backendConnected = !healthCheckQuery.isError && healthCheckQuery.data?.healthCheck === 1
 
   // Toggle language function
   const toggleLanguage = useCallback(() => {
@@ -290,11 +294,27 @@ export function HeaderWithActions() {
           </Link>
 
           {!matchSmallScreen && (
-            <SimpleTooltip label={endpointURL}>
-              <Code className="text-xs font-semibold px-2 py-1 rounded-md bg-secondary/80 hover:bg-secondary transition-colors">
-                {import.meta.env.APP_VERSION}
-              </Code>
-            </SimpleTooltip>
+            <Fragment>
+              <SimpleTooltip label={endpointURL}>
+                <Code className="text-xs font-semibold px-2 py-1 rounded-md bg-secondary/80 hover:bg-secondary transition-colors">
+                  {import.meta.env.APP_VERSION}
+                </Code>
+              </SimpleTooltip>
+              <SimpleTooltip label={endpointURL}>
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    'gap-1 border-transparent',
+                    backendConnected
+                      ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
+                      : 'border-destructive/30 bg-destructive/5 text-destructive',
+                  )}
+                >
+                  {backendConnected ? <Wifi className="h-3 w-3" /> : <CloudOff className="h-3 w-3" />}
+                  {backendConnected ? t('connected') : t('disconnected')}
+                </Badge>
+              </SimpleTooltip>
+            </Fragment>
           )}
         </div>
 

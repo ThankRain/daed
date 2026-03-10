@@ -34,6 +34,8 @@
     "advanced mode": "Advanced Mode",
     "already have an account, login instead": "Already have an account, login instead",
     "cancel": "Cancel",
+    "checkAllLatencies": "Check all latencies",
+    "checkLatency": "Check latency",
     "change endpoint": "Change Endpoint",
     "confirm": "Confirm",
     "configureNode": "Configure Node",
@@ -208,6 +210,13 @@
   "lanInterface": "LAN Interface",
   "lanNatDirect": "LAN NAT Direct connection",
   "link": "Link",
+  "latency": {
+    "checking": "Checking",
+    "failed": "Connection failed",
+    "lastChecked": "Last checked",
+    "monitoring": "Realtime monitoring",
+    "notChecked": "Not checked"
+  },
   "logLevel": "Log Level",
   "login account": "Login via username & password",
   "milliseconds": "ms",

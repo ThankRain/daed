@@ -2,10 +2,12 @@ import antfu from '@antfu/eslint-config'
 
 export default antfu({
   react: true,
-  typescript: true,
+  typescript: {
+    tsconfigPath: './tsconfig.eslint.json',
+  },
   yaml: false,
   stylistic: false,
-  ignores: ['wing', 'apps/web/src/schemas/**'],
+  ignores: ['wing', 'apps/web/src/schemas/**', 'eslint.config.js'],
   rules: {
     'no-template-curly-in-string': 'off',
     // Allow exporting variants alongside components (shadcn pattern)

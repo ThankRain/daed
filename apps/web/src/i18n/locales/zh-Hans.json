@@ -34,6 +34,8 @@
     "advanced mode": "进阶模式",
     "already have an account, login instead": "已经有一个账户了，直接登录",
     "cancel": "取消",
+    "checkAllLatencies": "检测全部延迟",
+    "checkLatency": "检测延迟",
     "change endpoint": "切换后台",
     "confirm": "确定",
     "configureNode": "配置节点",
@@ -208,6 +210,13 @@
   "lanInterface": "LAN 接口",
   "lanNatDirect": "LAN NAT 直连",
   "link": "链接",
+  "latency": {
+    "checking": "检测中",
+    "failed": "连接失败",
+    "lastChecked": "最近检测",
+    "monitoring": "实时监测中",
+    "notChecked": "未检测"
+  },
   "logLevel": "日志等级",
   "login account": "使用帐号密码登录",
   "milliseconds": "毫秒",
